@@ -1,4 +1,4 @@
-from dd_titles import get_titles
+from factual_titles import get_titles
 import pickle
 from selenium import webdriver
 from fake_useragent import UserAgent
