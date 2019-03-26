@@ -11,10 +11,11 @@ def get_titles():
     d = collections.defaultdict(list)  # dictionary to store factual data
     page = ['']
     # select the number of pages you want to scrape
-    num_pages = 30
+    num_pages = 38
     for i in range(num_pages):
         page.append(f'&page={i + 1}')
     for pageno in page:
+        print(pageno)
         url = f"http://ddnews.gov.in/about/news-archive?title=&news_type={cats[cat]}&changed_1=&changed_2={pageno}";
         page = urlopen(url)
         soup = BeautifulSoup(page, 'html.parser')
