@@ -2,8 +2,9 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import collections
 import pickle
+from tqdm import tqdm
 
-cat = "Sports"  # select category
+cat = "Entertainment"  # select category
 cats = {"National": 6, "Entertainment": 14, "Sports": 13}  # codes for each category. Used in DD news URL.
 
 
@@ -11,10 +12,10 @@ def get_titles():
     d = collections.defaultdict(list)  # dictionary to store factual data
     page = ['']
     # select the number of pages you want to scrape
-    num_pages = 38
+    num_pages = 7
     for i in range(num_pages):
         page.append(f'&page={i + 1}')
-    for pageno in page:
+    for pageno in tqdm(page):
         print(pageno)
         url = f"http://ddnews.gov.in/about/news-archive?title=&news_type={cats[cat]}&changed_1=&changed_2={pageno}";
         page = urlopen(url)
@@ -35,7 +36,7 @@ def get_titles():
 factual = get_titles()
 
 # save the dict to hard disk using pickle.
-with open(f"factual-{cat}.pickle", "wb") as handle:
+with open(f"pickle_files/factual-{cat}.pickle", "wb") as handle:
     pickle.dump(factual, handle)
 
 # calculate the total number of articles scrapped

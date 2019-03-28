@@ -1,17 +1,18 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
-from get_match import get_match
+from helper import get_match
 import collections
 import pickle
 import datetime
 import os
+import tqdm
 
-cat = "Sports"  # select category.
+cat = "Entertainment"  # select category.
 
 ndtv = collections.defaultdict(list)  # dict to store NDTV data.
 
 # load the saved factual dict from hard disk using pickle
-with open(f"factual-{cat}.pickle", "rb") as handle:
+with open(f"pickle_files/factual-{cat}.pickle", "rb") as handle:
     factual = pickle.load(handle)
 
 # change the date format such that it can be used in NDTV urls.
@@ -21,7 +22,8 @@ for date in factual:
     date = date[2] + "-" + date[1]
     dates.append(date)
 
-for date in set(dates):
+print("getting ndtv titles")
+for date in tqdm(set(dates)):
     url = f"http://archives.ndtv.com/articles/{date}.html"
     date = ""
     page = urlopen(url)
@@ -43,14 +45,16 @@ for date in list(ndtv.keys()):
     ndtv[new_date] = ndtv.pop(date)
 
 final_links = collections.defaultdict(list)  # dict to store both DD and the corresponding NDTV link.
-for date in factual:
+
+print("matching each dd article with a similar ndtv article")
+for date in tqdm(factual):
     for tup in factual[date]:
         ndtv_link = get_match(tup[0], date, ndtv)
         if ndtv_link is not None:
             final_links[date].append((tup[1], ndtv_link))
 
 # save the final dict to hard disk using pickle
-with open(f"final_links_{cat}.pickle", "wb") as handle:
+with open(f"pickle_files/final_links_{cat}.pickle", "wb") as handle:
     pickle.dump(final_links, handle)
 print(final_links)
 
