@@ -1,13 +1,13 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
-from helper import get_match
+from helper_functions import get_match
 import collections
 import pickle
 import datetime
 import os
-import tqdm
+from tqdm import tqdm
 
-cat = "Entertainment"  # select category.
+cat = "National"  # select category.
 
 ndtv = collections.defaultdict(list)  # dict to store NDTV data.
 
@@ -44,22 +44,5 @@ for date in list(ndtv.keys()):
     new_date = datetime.datetime.strptime(date, '%d %B %Y').strftime('%d-%m-%Y')
     ndtv[new_date] = ndtv.pop(date)
 
-final_links = collections.defaultdict(list)  # dict to store both DD and the corresponding NDTV link.
-
-print("matching each dd article with a similar ndtv article")
-for date in tqdm(factual):
-    for tup in factual[date]:
-        ndtv_link = get_match(tup[0], date, ndtv)
-        if ndtv_link is not None:
-            final_links[date].append((tup[1], ndtv_link))
-
-# save the final dict to hard disk using pickle
-with open(f"pickle_files/final_links_{cat}.pickle", "wb") as handle:
-    pickle.dump(final_links, handle)
-print(final_links)
-
-# calculate the total number of final links.
-total = 0
-for date in final_links:
-    total += len(final_links[date])
-print(total)
+with open(f"pickle_files/ndtv.pickle", "wb") as handle:
+    pickle.dump(ndtv, handle)
