@@ -882,7 +882,10 @@ def create_missing_emotions_chart_V2(trusted_src_dict):
             vals = trst_emotions_np[key]
             new_val = {k: sum(d[k] for d in vals)/float(len(vals)) for k in vals[0]}
             sum_all = sum(new_val.values())
-            updated_val = {k: new_val[k]/float(sum_all) for k in new_val.keys()}
+            if(sum_all==0):
+                updated_val = {k: new_val[k]/float(sum_all+1) for k in new_val.keys()}
+            else:
+                updated_val = {k: new_val[k]/float(sum_all) for k in new_val.keys()}
             trst_emotions_np_agg[key] = updated_val
     
     #print(trst_os1_keys)
